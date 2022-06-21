@@ -4,13 +4,8 @@
 |___|   |__|  |__||_____|__|__|__|
 ==================================
 
-Designed to take an image as an input and outputs mathematical expressions, specifically bezier curves. 
-It uses OpenCV edge detection. The main purpose of Prism is to create art with nothing but pure maths.
-In this current point in time, it just transforms pictures into curves, but soon, its going to be a
-platform which transform mathematical expressions into pictures.
-
-I know a lot of people have done this and it's not a unique idea, but this is mainly for me to practice
-coding in my python, a language which I am not that fond of, and also cause I feel like it.
+Designed to take an image as an input and outputs mathematical expressions, specifically bezier curves. It uses OpenCV edge detection. The main purpose of Prism is to create art with nothing but pure maths. In this current point in time, it just transforms pictures into curves, but soon, its going to be a platform which transform mathematical expressions into pictures.
+I know a lot of people have done this and it's not a unique idea, but this is mainly for me to practice coding in my python, a language which I am not that fond of, and also cause I feel like it.
 
 
 Usage:
