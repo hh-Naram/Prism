@@ -1,5 +1,8 @@
-Prism
-=====
+ ______        __
+|   __ \.----.|__|.-----.--------.
+|    __/|   _||  ||__ --|        |
+|___|   |__|  |__||_____|__|__|__|
+==================================
 
 Designed to take an image as an input and outputs mathematical expressions, specifically bezier curves. 
 It uses OpenCV edge detection. The main purpose of Prism is to create art with nothing but pure maths.
@@ -8,3 +11,14 @@ platform which transform mathematical expressions into pictures.
 
 I know a lot of people have done this and it's not a unique idea, but this is mainly for me to practice
 coding in my python, a language which I am not that fond of, and also cause I feel like it.
+
+
+Usage:
+------
+
+$ pip3 install -r requirements.txt # Download & Install dependencies
+$ python3 Prism.py
+
+ -> Input File: [path]      # Image that we are doing processing on.
+ > Lower Threshold: [value] # These 2 values indicate sensititivity
+ > Upper Threshold: [value] # for edge detection, big and small details.

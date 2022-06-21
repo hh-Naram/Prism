@@ -1,0 +1,3 @@
+opencv_python==4.6.0.66
+pyfiglet==0.8.post1
+pypotrace==0.3

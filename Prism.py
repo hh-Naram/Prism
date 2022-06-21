@@ -1,5 +1,6 @@
 import cv2
 import potrace
+import pyfiglet
 
 def GetPath(edges):
     for i in range(len(edges)):
@@ -37,24 +38,38 @@ def GetDesmos(expressions):
 
     for expression in expressions:
         desmosExpressionID += 1
-        desmosExpressions.append('{id: \'graph%d\', latex: \'%s\' }' % (desmosExpressionID, expression))
+        desmosExpressions.append('Calc.setExpression({id: \'graph%d\', latex: \'%s\' })' % (desmosExpressionID, expression))
     return desmosExpressions
 
 
-def testMain():
-    inputFile  = 'Images/Text.png'
-    lowerThreshold = 50
-    upperThreshold = 150
+def main():
+    print(pyfiglet.Figlet(font='chunky').renderText('Prism'))
+
+    inputFile = input(' -> Input File: ')
+    lowerThreshold = int(input(' > Lower Threshold: '))
+    upperThreshold = int(input(' > Upper Threshold: '))
 
     image = cv2.imread(inputFile)
-    edges = cv2.Canny(image, lowerThreshold, upperThreshold)
+    flipped = cv2.flip(image, 0)
+    edges = cv2.Canny(flipped, lowerThreshold, upperThreshold)
 
     path = GetPath(edges)
     expressions = GetExpressions(path)
     desmosExpressions = GetDesmos(expressions)
 
-    for expression in desmosExpressions:
-        print('Calc.setExpression(%s)' %(expression))
+    with open('output.js', "w+") as file:
+        for expression in desmosExpressions:
+            file.write(expression)
+            file.write('\n')
+    with open('output.tex', "w+") as file:
+        for expression in expressions:
+            file.write(expression)
+            file.write('\n')
+
+    print('-----------------------------')
+    print('Image processed successfully.')
+    print(' * Desmos Commands: output.js')
+    print(' * Latex file:      output.tex')
 
 if __name__ == '__main__':
-    testMain()
+    main()
