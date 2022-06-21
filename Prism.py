@@ -31,25 +31,30 @@ def GetExpressions(path):
             start = segment.end_point
     return expressions
 
-def main():
-    inputFile  = input("Input file: ")
-    outputFile = input("Output file: ")
-    lowerThreshold = int(input("Lower Threshold: "))
-    upperThreshold = int(input("Upper Threshold: "))
+def GetDesmos(expressions):
+    desmosExpressions = []
+    desmosExpressionID = 0
 
+    for expression in expressions:
+        desmosExpressionID += 1
+        desmosExpressions.append('{id: \'graph%d\', latex: \'%s\' }' % (desmosExpressionID, expression))
+    return desmosExpressions
+
+
+def testMain():
+    inputFile  = 'Images/Text.png'
+    lowerThreshold = 50
+    upperThreshold = 150
 
     image = cv2.imread(inputFile)
     edges = cv2.Canny(image, lowerThreshold, upperThreshold)
 
     path = GetPath(edges)
     expressions = GetExpressions(path)
+    desmosExpressions = GetDesmos(expressions)
 
-    with open(outputFile, "w+") as file:
-        for expression in expressions:
-            file.write(expression)
-            file.write('\n')
-        file.close()
-
+    for expression in desmosExpressions:
+        print('Calc.setExpression(%s)' %(expression))
 
 if __name__ == '__main__':
-    main()
+    testMain()
