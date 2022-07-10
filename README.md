@@ -13,7 +13,7 @@ $ python3 Prism.py
 ## Features
 Detect edges in any image with custom thresholds and output data in several formats including: `Desmos expressions`, `Latex` and `SVG`.
 
-## References:
+## References
 - [Wiki: Bézier curve](https://en.wikipedia.org/wiki/B%C3%A9zier_curve)
 - [Wiki: Potrace](https://en.wikipedia.org/wiki/potrace)
 - [Wiki: Canny Edge Detection](https://en.wikipedia.org/wiki/Canny_edge_detector)
