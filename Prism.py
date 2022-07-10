@@ -1,6 +1,14 @@
 import cv2
 import potrace
 import pyfiglet
+import inquirer
+
+def WriteExpressions(file, expressions):
+     with open(file, "w+") as file:
+            for expression in expressions:
+                file.write(expression)
+                file.write('\n')
+
 
 def GetPath(edges):
     for i in range(len(edges)):
@@ -9,7 +17,7 @@ def GetPath(edges):
     path = bitmap.trace(2, potrace.TURNPOLICY_MINORITY, 1.0, 1, 0.5)
     return path
 
-def GetExpressions(path):
+def ExportExpressions(path):
     expressions = []
 
     for curve in path.curves:
@@ -26,13 +34,12 @@ def GetExpressions(path):
                 x1, y1 = segment.c1
                 x2, y2 = segment.c2
                 x3, y3 = segment.end_point
-                expressions.append('((1-t)((1-t)((1-t)%f+t%f)+t((1-t)%f+t%f))+t((1-t)((1-t)%f+t%f)+t((1-t)%f+t%f)),\
-                                    (1-t)((1-t)((1-t)%f+t%f)+t((1-t)%f+t%f))+t((1-t)((1-t)%f+t%f)+t((1-t)%f+t%f)))' % \
+                expressions.append('((1-t)((1-t)((1-t)%f+t%f)+t((1-t)%f+t%f))+t((1-t)((1-t)%f+t%f)+t((1-t)%f+t%f)), (1-t)((1-t)((1-t)%f+t%f)+t((1-t)%f+t%f))+t((1-t)((1-t)%f+t%f)+t((1-t)%f+t%f)))' % \
                                    (x0, x1, x1, x2, x1, x2, x2, x3, y0, y1, y1, y2, y1, y2, y2, y3))
             start = segment.end_point
     return expressions
 
-def GetDesmos(expressions):
+def ExportDesmos(expressions):
     desmosExpressions = []
     desmosExpressionID = 0
 
@@ -41,6 +48,19 @@ def GetDesmos(expressions):
         desmosExpressions.append('Calc.setExpression({id: \'graph%d\', latex: \'%s\' })' % (desmosExpressionID, expression))
     return desmosExpressions
 
+def ExportSVG(image, edges):
+    height, width, channels = image.shape
+
+    expressions = []
+    expressions.append(f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg">')
+    for edge in edges:
+        expressions.append('<path d="M')
+        for i in range(len(edge)):
+            x, y = edge[i][0]
+            expressions.append(f"{x} {y} ")
+        expressions.append('" style="stroke:pink"/>')
+    expressions.append('</svg>')
+    return expressions
 
 def main():
     print(pyfiglet.Figlet(font='chunky').renderText('Prism'))
@@ -52,24 +72,28 @@ def main():
     image = cv2.imread(inputFile)
     flipped = cv2.flip(image, 0)
     edges = cv2.Canny(flipped, lowerThreshold, upperThreshold)
-
     path = GetPath(edges)
-    expressions = GetExpressions(path)
-    desmosExpressions = GetDesmos(expressions)
 
-    with open('output.js', "w+") as file:
-        for expression in desmosExpressions:
-            file.write(expression)
-            file.write('\n')
-    with open('output.tex', "w+") as file:
-        for expression in expressions:
-            file.write(expression)
-            file.write('\n')
+    questions = [
+        inquirer.Checkbox('Exports',
+                          message='How do you want to export?',
+                          choices=[
+                              'Latex Expressions: (output.tex)',
+                              'Demos Expressions: (output.js)',
+                              'SVG file: (output.svg)',
+                          ])
+    ]
+    answers = inquirer.prompt(questions)
 
     print('-----------------------------')
     print('Image processed successfully.')
-    print(' * Desmos Commands: output.js')
-    print(' * Latex file:      output.tex')
+
+    if 'output.tex' in str(answers):
+        WriteExpressions('output.tex', ExportExpressions(path))
+    if 'output.js' in str(answers):
+        WriteExpressions('output.js', ExportDesmos(ExportExpressions(path)))
+    if 'output.svg' in str(answers):
+        WriteExpressions('output.svg', ExportSVG(image, edges))
 
 if __name__ == '__main__':
     main()
